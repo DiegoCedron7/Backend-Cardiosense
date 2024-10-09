@@ -28,11 +28,36 @@ public class UserService {
     public UserEntity createUser(UserEntity userEntity) {
         if (userEntity == null) throw new IllegalArgumentException("User cannot be null");
 
+        userEntity.setName(userEntity.getName());
+        userEntity.setLastname(userEntity.getLastname());
+        userEntity.setDocumentType(userEntity.getDocumentType());
+        userEntity.setPhone(userEntity.getPhone());
+        userEntity.setAddress(userEntity.getAddress());
+        userEntity.setEmail(userEntity.getEmail());
+        userEntity.setPassword(userEntity.getPassword());
+
         return userRepository.save(userEntity);
     }
 
     public Optional<UserEntity> updateUser(String id, UserEntity userDTO) {
-        // TODO: Implement this method
+
+        if (id == null) return Optional.empty();
+
+        Optional<UserEntity> user = userRepository.findById(id);
+
+        if (user.isPresent()) {
+            UserEntity userEntity = user.get();
+            userEntity.setName(userDTO.getName());
+            userEntity.setLastname(userDTO.getLastname());
+            userEntity.setDocumentType(userDTO.getDocumentType());
+            userEntity.setPhone(userDTO.getPhone());
+            userEntity.setAddress(userDTO.getAddress());
+            userEntity.setEmail(userDTO.getEmail());
+            userEntity.setPassword(userDTO.getPassword());
+            userEntity.setImage(userDTO.getImage());
+            return Optional.of(userRepository.save(userEntity));
+        }
+
         return Optional.empty();
     }
 
