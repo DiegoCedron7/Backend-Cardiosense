@@ -44,5 +44,20 @@ public class TrainingService {
         trainingPlanRepository.save(trainingPlan);
     }
 
+    public EquivalencesEntity getEquivalence(String userId) {
+        return null;
+    }
+
+    public RecommendationsEntity getRecommendation(String userId) {
+        return null;
+    }
+
+    public TrainingDataEntity getTrainingData(String userId) {
+        return null;
+    }
+
+    public TrainingPlanEntity getTrainingPlan(String userId) {
+        return null;
+    }
 
 }
