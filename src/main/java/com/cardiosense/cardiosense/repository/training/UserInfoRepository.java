@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserInfoRepository extends MongoRepository<UserInfoEntity, String> {
     Optional<UserInfoEntity> findByUser_Id(String userId);
+
+    boolean existsByUser_Id(String userId);
 }

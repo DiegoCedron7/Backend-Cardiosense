@@ -65,4 +65,10 @@ public class UserService {
         // TODO: Implement this method
         return false;
     }
+
+    public boolean existsById(String id) {
+        return userRepository.existsById(id);
+    }
+
+
 }

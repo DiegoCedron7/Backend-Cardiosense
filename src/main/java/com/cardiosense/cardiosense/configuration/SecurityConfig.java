@@ -32,6 +32,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/createUser").permitAll();
                     auth.requestMatchers("/api/**").permitAll();
                     auth.requestMatchers("/users/**").permitAll();
+                    auth.requestMatchers("/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {

@@ -6,7 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "user_info")
+import java.util.Date;
+
+@Document(collection = "training_user_info")
 @Data
 public class UserInfoEntity {
 
@@ -59,4 +61,7 @@ public class UserInfoEntity {
     private int edad;
 
     private String sexo;
+
+    private Date createdAt;
+    private Date updatedAt;
 }

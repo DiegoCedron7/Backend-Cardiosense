@@ -5,6 +5,8 @@ import com.cardiosense.cardiosense.repository.training.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 @AllArgsConstructor
 public class UserInfoService {
@@ -12,6 +14,7 @@ public class UserInfoService {
 
 
     public UserInfoEntity saveUserInfo(UserInfoEntity userInfo) {
+        userInfo.setCreatedAt(new Date());
         return userInfoRepository.save(userInfo);
     }
 
@@ -19,7 +22,7 @@ public class UserInfoService {
         return userInfoRepository.findByUser_Id(userId).orElse(null);
     }
 
-    public UserInfoEntity updateUserInfo(String userId, UserInfoEntity userInfo) {
+    public void updateUserInfo(String userId, UserInfoEntity userInfo) {
 
         UserInfoEntity user = userInfoRepository.findByUser_Id(userId).orElseThrow(() -> new IllegalArgumentException("User not found for id: " + userId));
 
@@ -89,7 +92,12 @@ public class UserInfoService {
         if (userInfo.getSexo() != null) {
             user.setSexo(userInfo.getSexo());
         }
+
+        user.setUpdatedAt(new Date());
         userInfoRepository.save(user);
-        return user;
+    }
+
+    public boolean existsByUserId(String userId) {
+        return userInfoRepository.existsByUser_Id(userId);
     }
 }
