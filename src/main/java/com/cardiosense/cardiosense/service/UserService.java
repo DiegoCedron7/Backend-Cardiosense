@@ -1,6 +1,5 @@
 package com.cardiosense.cardiosense.service;
 
-import com.cardiosense.cardiosense.model.dto.UserDTO;
 import com.cardiosense.cardiosense.model.UserEntity;
 import com.cardiosense.cardiosense.repository.UserRepository;
 import lombok.AllArgsConstructor;
