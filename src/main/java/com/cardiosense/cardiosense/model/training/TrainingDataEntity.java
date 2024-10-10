@@ -1,7 +1,9 @@
 package com.cardiosense.cardiosense.model.training;
 
+import com.cardiosense.cardiosense.model.UserEntity;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -12,7 +14,9 @@ public class TrainingDataEntity {
     @Id
     private String id;
 
-    private String user;
+    @DBRef
+    private UserEntity user;
+
     private Date createdAt;
     private int version;
     private String estadoActual;

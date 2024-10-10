@@ -34,7 +34,13 @@ public class TrainingService {
     public void generateCompleteTrainingPlan(String userId) {
         try {
             UserInfoEntity userInfo = userInfoService.getUserInfo(userId);
-            String response = restTemplate.postForObject(GENERATE_PLAN_URL, userInfo, String.class);
+
+            String response = null;
+            try {
+                response = restTemplate.postForObject(GENERATE_PLAN_URL, userInfo, String.class);
+            } catch (Exception e) {
+                log.error("Error al conectarse con el servidor de entrenamiento: {}", e.getMessage(), e);
+            }
 
             if (response != null) {
                 JsonNode root = objectMapper.readTree(response);
@@ -97,7 +103,7 @@ public class TrainingService {
     private void saveTrainingData(JsonNode stateNode, JsonNode typeNode, UserInfoEntity userInfo) {
         if (stateNode != null && typeNode != null) {
             TrainingDataEntity trainingData = new TrainingDataEntity();
-            trainingData.setUser(userInfo.getUser().getId());
+            trainingData.setUser(userInfo.getUser());
             trainingData.setCreatedAt(new Date());
             trainingData.setEstadoActual(stateNode.get("estado_actual").asText());
             trainingData.setPesoActual(stateNode.get("peso_actual").asDouble());
