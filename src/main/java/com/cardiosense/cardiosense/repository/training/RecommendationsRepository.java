@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RecommendationsRepository extends MongoRepository<RecommendationsEntity, String> {
+
+    // findByUser_Id
+    RecommendationsEntity findByUser_Id(String userId);
 }

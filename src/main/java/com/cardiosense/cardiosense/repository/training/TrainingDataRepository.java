@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TrainingDataRepository extends MongoRepository<TrainingDataEntity, String> {
+
+    // findByUser_Id
+    TrainingDataEntity findByUser_Id(String userId);
 }
