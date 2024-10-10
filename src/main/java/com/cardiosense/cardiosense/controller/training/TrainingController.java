@@ -44,4 +44,9 @@ public class TrainingController {
     public ResponseEntity<TrainingDataEntity> getTrainingData(@PathVariable String userId) {
         return ResponseEntity.ok(trainingService.getTrainingData(userId));
     }
+
+    @GetMapping("/imc/{userId}")
+    public ResponseEntity<?> getIMC(@PathVariable String userId) {
+        return ResponseEntity.ok(trainingService.generateIMC(userId));
+    }
 }
