@@ -1,4 +1,4 @@
-package com.cardiosense.cardiosense.DTO;
+package com.cardiosense.cardiosense.DTO.User;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
-package com.cardiosense.cardiosense.repository.UserInfo;
+package com.cardiosense.cardiosense.repository.User.Info;
 
-import com.cardiosense.cardiosense.model.UserInfo.Training;
+import com.cardiosense.cardiosense.model.User.Info.Training;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import com.cardiosense.cardiosense.model.UserEntity;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 
 public interface TrainingRepository extends MongoRepository<Training, String> {
 

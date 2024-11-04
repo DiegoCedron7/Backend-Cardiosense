@@ -1,8 +1,8 @@
-package com.cardiosense.cardiosense.repository.UserInfo;
+package com.cardiosense.cardiosense.repository.User.Info;
 
-import com.cardiosense.cardiosense.model.UserInfo.Diet;
+import com.cardiosense.cardiosense.model.User.Info.Diet;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import com.cardiosense.cardiosense.model.UserEntity;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 
 public interface DietRepository extends MongoRepository<Diet, String> {
 

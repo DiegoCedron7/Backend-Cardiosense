@@ -1,9 +1,9 @@
 package com.cardiosense.cardiosense.controller;
 
 
-import com.cardiosense.cardiosense.DTO.UserInfoDTO.FullDataDTO;
-import com.cardiosense.cardiosense.model.UserEntity;
-import com.cardiosense.cardiosense.model.UserInfo.FullData;
+import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.FullDataDTO;
+import com.cardiosense.cardiosense.model.User.UserEntity;
+import com.cardiosense.cardiosense.model.User.Info.FullData;
 import com.cardiosense.cardiosense.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

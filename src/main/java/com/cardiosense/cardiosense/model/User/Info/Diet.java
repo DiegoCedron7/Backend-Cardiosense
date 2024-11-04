@@ -1,6 +1,6 @@
-package com.cardiosense.cardiosense.model.UserInfo;
+package com.cardiosense.cardiosense.model.User.Info;
 
-import com.cardiosense.cardiosense.model.UserEntity;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +9,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "training_info")
+@Document(collection = "diet_info")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Training {
+public class Diet {
 
     @Id
     private String id;
@@ -22,7 +22,7 @@ public class Training {
     @DBRef
     private UserEntity user;
 
-    // Todos los campos relacionados a entrenamiento.
+    // Todos los campos relacionados a dieta.
 
-    private int kilometrosRecorridos;
+    private int calorias;
 }

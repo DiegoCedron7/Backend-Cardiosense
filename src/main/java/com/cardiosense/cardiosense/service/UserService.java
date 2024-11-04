@@ -1,16 +1,16 @@
 package com.cardiosense.cardiosense.service;
 
-import com.cardiosense.cardiosense.DTO.UserDTO;
-import com.cardiosense.cardiosense.DTO.UserInfoDTO.DietDTO;
-import com.cardiosense.cardiosense.DTO.UserInfoDTO.FullDataDTO;
-import com.cardiosense.cardiosense.DTO.UserInfoDTO.TrainingDTO;
-import com.cardiosense.cardiosense.model.UserEntity;
-import com.cardiosense.cardiosense.model.UserInfo.Diet;
-import com.cardiosense.cardiosense.model.UserInfo.FullData;
-import com.cardiosense.cardiosense.model.UserInfo.Training;
-import com.cardiosense.cardiosense.repository.UserInfo.DietRepository;
-import com.cardiosense.cardiosense.repository.UserInfo.TrainingRepository;
-import com.cardiosense.cardiosense.repository.UserRepository;
+import com.cardiosense.cardiosense.DTO.User.UserDTO;
+import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.DietDTO;
+import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.FullDataDTO;
+import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.TrainingDTO;
+import com.cardiosense.cardiosense.model.User.UserEntity;
+import com.cardiosense.cardiosense.model.User.Info.Diet;
+import com.cardiosense.cardiosense.model.User.Info.FullData;
+import com.cardiosense.cardiosense.model.User.Info.Training;
+import com.cardiosense.cardiosense.repository.User.Info.DietRepository;
+import com.cardiosense.cardiosense.repository.User.Info.TrainingRepository;
+import com.cardiosense.cardiosense.repository.User.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

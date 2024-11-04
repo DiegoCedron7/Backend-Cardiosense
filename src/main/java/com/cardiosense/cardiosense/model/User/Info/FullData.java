@@ -1,4 +1,4 @@
-package com.cardiosense.cardiosense.model.UserInfo;
+package com.cardiosense.cardiosense.model.User.Info;
 
 import lombok.Data;
 
