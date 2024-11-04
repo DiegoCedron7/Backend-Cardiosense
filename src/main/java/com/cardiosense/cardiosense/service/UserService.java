@@ -154,6 +154,13 @@ public class UserService {
             userDTO.setEstiloVida(userEntity.getEstiloVida());
             userDTO.setSuplementos(userEntity.getSuplementos());
             userDTO.setObjetivo(userEntity.getObjetivo());
+            userDTO.setName(userEntity.getName());
+            userDTO.setDocumentType(userEntity.getDocumentType());
+            userDTO.setAddress(userEntity.getAddress());
+            userDTO.setPhone(userEntity.getPhone());
+            userDTO.setDocumentNumber(userEntity.getDocumentNumber());
+            userDTO.setEmail(userEntity.getEmail());
+            userDTO.setLastname(userEntity.getLastname());
 
 
             Diet diet = dietRepository.findByUser(userEntity);

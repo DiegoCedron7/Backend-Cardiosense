@@ -16,6 +16,7 @@ public class UserEntity {
     private String name;
     private String lastname;
     private String documentType;
+    private Integer documentNumber;
     private Number phone;
     private String address;
     private String email;

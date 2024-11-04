@@ -9,9 +9,18 @@ public class UserDTO {
     private String objetivo;
     private List<String> suplementos;
     private String estiloVida;
-    private int pesoInicial;
-    private int pesoActualizado;
-    private int altura;
-    private int edad;
+    private Integer pesoInicial;
+    private Integer pesoActualizado;
+    private Integer altura;
+    private Integer edad;
+
+    // Datos generales del usuario.
     private String sexo;
+    private String name;
+    private String lastname;
+    private String documentType;
+    private Integer documentNumber;
+    private Number phone;
+    private String address;
+    private String email;
 }
