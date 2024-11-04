@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 @Data
+@Document(collection = "training_plan")
 public class TrainingPlan {
 
 
@@ -50,9 +52,9 @@ public class TrainingPlan {
     @Data
     public static class Ejercicio {
         private String nombre;
-        private String duracion; // Opcional, ya que algunos ejercicios tienen duración en lugar de repeticiones
-        private Integer repeticiones; // Integer para permitir null si no aplica
-        private Integer series; // Integer para permitir null si no aplica
+        private String duracion;
+        private Integer repeticiones;
+        private Integer series;
     }
 }
 

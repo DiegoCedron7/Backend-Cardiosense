@@ -15,4 +15,8 @@ public class DietDTO {
     private String distribucionMacronutrientes;
     private int disponibilidadCocinar;
     private List<String> preferenciasCoccion;
+    private String residencia;
+    private String nivelActividad;
+    private int porcentajeGrasa;
+    private List<String> condicionesMedicas;
 }

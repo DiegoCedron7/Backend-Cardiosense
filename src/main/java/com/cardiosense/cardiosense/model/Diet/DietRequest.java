@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class DietRequest {
 
-    // Todas estas las obtendré de la Información de Usuario
     private int pesoInicial;
     private String pesoActualizado;
     private int altura;
@@ -21,11 +20,9 @@ public class DietRequest {
     private String sexo;
     private String tipoCuerpo;
     private String residencia;
-
     private String nivelActividad;
     private int porcentajeGrasa;
-    private String condicionesMedicas;
-
+    private List<String> condicionesMedicas;
     private int numeroComidas;
     private String alergias;
     private String objetivo;

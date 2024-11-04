@@ -36,11 +36,11 @@ public class DietPlan {
 
     @Data
     public static class NutricionDiaria {
-        private int aguaMl;
-        private int calorias;
-        private int carbohidratos;
-        private int grasas;
-        private int proteinas;
+        private String aguaMl;
+        private String calorias;
+        private String carbohidratos;
+        private String grasas;
+        private String proteinas;
     }
 
     @Data
