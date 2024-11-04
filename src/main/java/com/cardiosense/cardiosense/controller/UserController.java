@@ -1,7 +1,9 @@
 package com.cardiosense.cardiosense.controller;
 
 
+import com.cardiosense.cardiosense.DTO.UserInfoDTO.FullDataDTO;
 import com.cardiosense.cardiosense.model.UserEntity;
+import com.cardiosense.cardiosense.model.UserInfo.FullData;
 import com.cardiosense.cardiosense.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +46,20 @@ public class UserController {
         return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
-        boolean deleted = userService.deleteUser(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+
+    @PostMapping("/{id}/save-data")
+    public ResponseEntity<String> saveData(@PathVariable String id, @RequestBody FullData fullData) {
+        try {
+            userService.saveData(id, fullData);
+            return ResponseEntity.ok("Data saved successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/get-data")
+    public ResponseEntity<FullDataDTO> getData(@PathVariable String id) {
+        Optional<FullDataDTO> fullData = userService.getData(id);
+        return fullData.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

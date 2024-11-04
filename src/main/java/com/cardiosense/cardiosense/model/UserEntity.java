@@ -1,11 +1,13 @@
 package com.cardiosense.cardiosense.model;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 @Data
+@Builder
 public class UserEntity {
     @Id
     private String id;
@@ -20,6 +22,8 @@ public class UserEntity {
     private String authStrategy = "local";
     private String role = "user";
     private String createdAt = String.valueOf(System.currentTimeMillis());
+    private boolean firstLogin = true;
+
 
 }
 
