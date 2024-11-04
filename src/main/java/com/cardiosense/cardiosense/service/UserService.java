@@ -20,6 +20,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final DietRepository dietRepository;
     private final TrainingRepository trainingRepository;
@@ -29,9 +30,7 @@ public class UserService {
     }
 
     public Optional<UserEntity> getUserById(String id) {
-        if (id == null) return Optional.empty();
-
-        return Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found")));
+        return id == null ? Optional.empty() : userRepository.findById(id);
     }
 
     public UserEntity createUser(UserEntity userEntity) {
@@ -39,132 +38,118 @@ public class UserService {
         return userRepository.save(userEntity);
     }
 
-
     public void saveOrUpdateData(String id, FullData fullData) {
-        Optional<UserEntity> userOptional = userRepository.findById(id);
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
 
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User with id " + id + " not found");
-        }
+        updateUserInfo(userEntity, fullData);
+        updateDietInfo(userEntity, fullData.getDiet());
+        updateTrainingInfo(userEntity, fullData.getTraining());
 
-        UserEntity userEntity = userOptional.get();
-
-        if (fullData.getUser() != null) {
-            if (fullData.getUser().getPhone() != null) {
-                userEntity.setPhone(fullData.getUser().getPhone());
-            }
-            if (fullData.getUser().getAddress() != null) {
-                userEntity.setAddress(fullData.getUser().getAddress());
-            }
-            if (fullData.getUser().getDocumentType() != null) {
-                userEntity.setDocumentType(fullData.getUser().getDocumentType());
-            }
-
-            if (fullData.getUser().getObjetivo() != null) {
-                userEntity.setObjetivo(fullData.getUser().getObjetivo());
-            }
-            if (fullData.getUser().getSuplementos() != null) {
-                userEntity.setSuplementos(fullData.getUser().getSuplementos());
-            }
-            if (fullData.getUser().getEstiloVida() != null) {
-                userEntity.setEstiloVida(fullData.getUser().getEstiloVida());
-            }
-            if (fullData.getUser().getPesoInicial() != 0) {
-                userEntity.setPesoInicial(fullData.getUser().getPesoInicial());
-            }
-            if (fullData.getUser().getPesoActualizado() != 0) {
-                userEntity.setPesoActualizado(fullData.getUser().getPesoActualizado());
-            }
-            if (fullData.getUser().getAltura() != 0) {
-                userEntity.setAltura(fullData.getUser().getAltura());
-            }
-            if (fullData.getUser().getEdad() != 0) {
-                userEntity.setEdad(fullData.getUser().getEdad());
-            }
-            if (fullData.getUser().getSexo() != null) {
-                userEntity.setSexo(fullData.getUser().getSexo());
-            }
-        }
-
-        userRepository.save(userEntity);
-
-        // Diet
-        Diet diet = dietRepository.findByUser(userEntity);
-        if (diet == null) {
-            diet = new Diet();
-            diet.setUser(userEntity);
-        }
-
-        diet.setAlergias(fullData.getDiet().getAlergias());
-        diet.setIntolerancias(fullData.getDiet().getIntolerancias());
-        diet.setNumeroComidas(fullData.getDiet().getNumeroComidas());
-        diet.setAlimentosPreferidos(fullData.getDiet().getAlimentosPreferidos());
-        diet.setAlimentosEvitar(fullData.getDiet().getAlimentosEvitar());
-        diet.setPreferenciaAlimentaria(fullData.getDiet().getPreferenciaAlimentaria());
-        diet.setDistribucionMacronutrientes(fullData.getDiet().getDistribucionMacronutrientes());
-        diet.setDisponibilidadCocinar(fullData.getDiet().getDisponibilidadCocinar());
-        diet.setPreferenciasCoccion(fullData.getDiet().getPreferenciasCoccion());
-        dietRepository.save(diet);
-
-        // Training
-        Training training = trainingRepository.findByUser(userEntity);
-        if (training == null) {
-            training = new Training();
-            training.setUser(userEntity);
-        }
-
-        training.setEjercicioDiario(fullData.getTraining().getEjercicioDiario());
-        training.setCantidadEjerciciosPorDia(fullData.getTraining().getCantidadEjerciciosPorDia());
-        training.setFrecuenciaEntrenamientoSemanal(fullData.getTraining().getFrecuenciaEntrenamientoSemanal());
-        training.setTiempoDisponiblePorDia(fullData.getTraining().getTiempoDisponiblePorDia());
-        training.setNivelExperiencia(fullData.getTraining().getNivelExperiencia());
-        training.setPreferenciaEjercicios(fullData.getTraining().getPreferenciaEjercicios());
-        training.setEquipamientoDisponible(fullData.getTraining().getEquipamientoDisponible());
-        training.setAreasMejorar(fullData.getTraining().getAreasMejorar());
-        training.setLesionesLimitaciones(fullData.getTraining().getLesionesLimitaciones());
-        training.setTipoCuerpo(fullData.getTraining().getTipoCuerpo());
-        training.setPreferenciaIndoorOutdoor(fullData.getTraining().getPreferenciaIndoorOutdoor());
-        training.setCondicionesMedicas(fullData.getTraining().getCondicionesMedicas());
-        training.setPreferenciaEstiloEntrenamiento(fullData.getTraining().getPreferenciaEstiloEntrenamiento());
-        training.setHorasSueno(fullData.getTraining().getHorasSueno());
-
-
-        trainingRepository.save(training);
-
-        // First login update
         if (userEntity.isFirstLogin()) {
             userEntity.setFirstLogin(false);
             userRepository.save(userEntity);
         }
     }
 
+    private void updateUserInfo(UserEntity userEntity, FullData fullData) {
+        var userInfo = fullData.getUser();
+        if (userInfo != null) {
+            Optional.ofNullable(userInfo.getPhone()).ifPresent(userEntity::setPhone);
+            Optional.ofNullable(userInfo.getAddress()).ifPresent(userEntity::setAddress);
+            Optional.ofNullable(userInfo.getDocumentType()).ifPresent(userEntity::setDocumentType);
+            Optional.ofNullable(userInfo.getObjetivo()).ifPresent(userEntity::setObjetivo);
+            Optional.ofNullable(userInfo.getSuplementos()).ifPresent(userEntity::setSuplementos);
+            Optional.ofNullable(userInfo.getEstiloVida()).ifPresent(userEntity::setEstiloVida);
+            if (userInfo.getPesoInicial() != 0) userEntity.setPesoInicial(userInfo.getPesoInicial());
+            if (userInfo.getPesoActualizado() != 0) userEntity.setPesoActualizado(userInfo.getPesoActualizado());
+            if (userInfo.getAltura() != 0) userEntity.setAltura(userInfo.getAltura());
+            if (userInfo.getEdad() != 0) userEntity.setEdad(userInfo.getEdad());
+            Optional.ofNullable(userInfo.getSexo()).ifPresent(userEntity::setSexo);
+        }
+        userRepository.save(userEntity);
+    }
+
+    private void updateDietInfo(UserEntity userEntity, Diet dietData) {
+        Diet diet = Optional.ofNullable(dietRepository.findByUser(userEntity)).orElse(new Diet());
+        diet.setUser(userEntity);
+
+
+        Optional.ofNullable(dietData).ifPresent(d -> {
+            diet.setAlergias(d.getAlergias());
+            diet.setIntolerancias(d.getIntolerancias());
+            diet.setNumeroComidas(d.getNumeroComidas());
+            diet.setAlimentosPreferidos(d.getAlimentosPreferidos());
+            diet.setAlimentosEvitar(d.getAlimentosEvitar());
+            diet.setPreferenciaAlimentaria(d.getPreferenciaAlimentaria());
+            diet.setDistribucionMacronutrientes(d.getDistribucionMacronutrientes());
+            diet.setDisponibilidadCocinar(d.getDisponibilidadCocinar());
+            diet.setPreferenciasCoccion(d.getPreferenciasCoccion());
+        });
+
+        dietRepository.save(diet);
+    }
+
+    private void updateTrainingInfo(UserEntity userEntity, Training trainingData) {
+        Training training = Optional.ofNullable(trainingRepository.findByUser(userEntity)).orElse(new Training());
+        training.setUser(userEntity);
+
+        Optional.ofNullable(trainingData).ifPresent(t -> {
+            training.setEjercicioDiario(t.getEjercicioDiario());
+            training.setCantidadEjerciciosPorDia(t.getCantidadEjerciciosPorDia());
+            training.setFrecuenciaEntrenamientoSemanal(t.getFrecuenciaEntrenamientoSemanal());
+            training.setTiempoDisponiblePorDia(t.getTiempoDisponiblePorDia());
+            training.setNivelExperiencia(t.getNivelExperiencia());
+            training.setPreferenciaEjercicios(t.getPreferenciaEjercicios());
+            training.setEquipamientoDisponible(t.getEquipamientoDisponible());
+            training.setAreasMejorar(t.getAreasMejorar());
+            training.setLesionesLimitaciones(t.getLesionesLimitaciones());
+            training.setTipoCuerpo(t.getTipoCuerpo());
+            training.setPreferenciaIndoorOutdoor(t.getPreferenciaIndoorOutdoor());
+            training.setCondicionesMedicas(t.getCondicionesMedicas());
+            training.setPreferenciaEstiloEntrenamiento(t.getPreferenciaEstiloEntrenamiento());
+            training.setHorasSueno(t.getHorasSueno());
+        });
+
+        trainingRepository.save(training);
+    }
 
     public Optional<FullDataDTO> getData(String id) {
-        Optional<UserEntity> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            UserEntity userEntity = user.get();
+        return userRepository.findById(id).map(userEntity -> {
+            UserDTO userDTO = mapToUserDTO(userEntity);
+            DietDTO dietDTO = mapToDietDTO(dietRepository.findByUser(userEntity));
+            TrainingDTO trainingDTO = mapToTrainingDTO(trainingRepository.findByUser(userEntity));
 
-            UserDTO userDTO = new UserDTO();
+            FullDataDTO fullDataDTO = new FullDataDTO();
+            fullDataDTO.setUser(userDTO);
+            fullDataDTO.setDiet(dietDTO);
+            fullDataDTO.setTraining(trainingDTO);
+            return fullDataDTO;
+        });
+    }
 
-            userDTO.setAltura(userEntity.getAltura());
-            userDTO.setEdad(userEntity.getEdad());
-            userDTO.setSexo(userEntity.getSexo());
-            userDTO.setPesoActualizado(userEntity.getPesoActualizado());
-            userDTO.setPesoInicial(userEntity.getPesoInicial());
-            userDTO.setEstiloVida(userEntity.getEstiloVida());
-            userDTO.setSuplementos(userEntity.getSuplementos());
-            userDTO.setObjetivo(userEntity.getObjetivo());
-            userDTO.setName(userEntity.getName());
-            userDTO.setDocumentType(userEntity.getDocumentType());
-            userDTO.setAddress(userEntity.getAddress());
-            userDTO.setPhone(userEntity.getPhone());
-            userDTO.setDocumentNumber(userEntity.getDocumentNumber());
-            userDTO.setEmail(userEntity.getEmail());
-            userDTO.setLastname(userEntity.getLastname());
+    private UserDTO mapToUserDTO(UserEntity userEntity) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setAltura(userEntity.getAltura());
+        userDTO.setEdad(userEntity.getEdad());
+        userDTO.setSexo(userEntity.getSexo());
+        userDTO.setPesoActualizado(userEntity.getPesoActualizado());
+        userDTO.setPesoInicial(userEntity.getPesoInicial());
+        userDTO.setEstiloVida(userEntity.getEstiloVida());
+        userDTO.setSuplementos(userEntity.getSuplementos());
+        userDTO.setObjetivo(userEntity.getObjetivo());
+        userDTO.setName(userEntity.getName());
+        userDTO.setDocumentType(userEntity.getDocumentType());
+        userDTO.setAddress(userEntity.getAddress());
+        userDTO.setPhone(userEntity.getPhone());
+        userDTO.setDocumentNumber(userEntity.getDocumentNumber());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setLastname(userEntity.getLastname());
+        return userDTO;
+    }
 
-
-            Diet diet = dietRepository.findByUser(userEntity);
-            DietDTO dietDTO = new DietDTO();
+    private DietDTO mapToDietDTO(Diet diet) {
+        DietDTO dietDTO = new DietDTO();
+        if (diet != null) {
             dietDTO.setAlergias(diet.getAlergias());
             dietDTO.setIntolerancias(diet.getIntolerancias());
             dietDTO.setNumeroComidas(diet.getNumeroComidas());
@@ -174,10 +159,13 @@ public class UserService {
             dietDTO.setDistribucionMacronutrientes(diet.getDistribucionMacronutrientes());
             dietDTO.setDisponibilidadCocinar(diet.getDisponibilidadCocinar());
             dietDTO.setPreferenciasCoccion(diet.getPreferenciasCoccion());
+        }
+        return dietDTO;
+    }
 
-
-            Training training = trainingRepository.findByUser(userEntity);
-            TrainingDTO trainingDTO = new TrainingDTO();
+    private TrainingDTO mapToTrainingDTO(Training training) {
+        TrainingDTO trainingDTO = new TrainingDTO();
+        if (training != null) {
             trainingDTO.setEjercicioDiario(training.getEjercicioDiario());
             trainingDTO.setCantidadEjerciciosPorDia(training.getCantidadEjerciciosPorDia());
             trainingDTO.setFrecuenciaEntrenamientoSemanal(training.getFrecuenciaEntrenamientoSemanal());
@@ -192,16 +180,7 @@ public class UserService {
             trainingDTO.setCondicionesMedicas(training.getCondicionesMedicas());
             trainingDTO.setPreferenciaEstiloEntrenamiento(training.getPreferenciaEstiloEntrenamiento());
             trainingDTO.setHorasSueno(training.getHorasSueno());
-
-
-            FullDataDTO fullDataDTO = new FullDataDTO();
-            fullDataDTO.setUser(userDTO);
-            fullDataDTO.setDiet(dietDTO);
-            fullDataDTO.setTraining(trainingDTO);
-
-            return Optional.of(fullDataDTO);
         }
-        return Optional.empty();
+        return trainingDTO;
     }
-
 }
