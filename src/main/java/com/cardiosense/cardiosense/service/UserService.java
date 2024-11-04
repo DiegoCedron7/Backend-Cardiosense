@@ -59,6 +59,31 @@ public class UserService {
             if (fullData.getUser().getDocumentType() != null) {
                 userEntity.setDocumentType(fullData.getUser().getDocumentType());
             }
+
+            if (fullData.getUser().getObjetivo() != null) {
+                userEntity.setObjetivo(fullData.getUser().getObjetivo());
+            }
+            if (fullData.getUser().getSuplementos() != null) {
+                userEntity.setSuplementos(fullData.getUser().getSuplementos());
+            }
+            if (fullData.getUser().getEstiloVida() != null) {
+                userEntity.setEstiloVida(fullData.getUser().getEstiloVida());
+            }
+            if (fullData.getUser().getPesoInicial() != 0) {
+                userEntity.setPesoInicial(fullData.getUser().getPesoInicial());
+            }
+            if (fullData.getUser().getPesoActualizado() != 0) {
+                userEntity.setPesoActualizado(fullData.getUser().getPesoActualizado());
+            }
+            if (fullData.getUser().getAltura() != 0) {
+                userEntity.setAltura(fullData.getUser().getAltura());
+            }
+            if (fullData.getUser().getEdad() != 0) {
+                userEntity.setEdad(fullData.getUser().getEdad());
+            }
+            if (fullData.getUser().getSexo() != null) {
+                userEntity.setSexo(fullData.getUser().getSexo());
+            }
         }
 
         userRepository.save(userEntity);
@@ -69,7 +94,16 @@ public class UserService {
             diet = new Diet();
             diet.setUser(userEntity);
         }
-        diet.setCalorias(fullData.getDiet().getCalorias());
+
+        diet.setAlergias(fullData.getDiet().getAlergias());
+        diet.setIntolerancias(fullData.getDiet().getIntolerancias());
+        diet.setNumeroComidas(fullData.getDiet().getNumeroComidas());
+        diet.setAlimentosPreferidos(fullData.getDiet().getAlimentosPreferidos());
+        diet.setAlimentosEvitar(fullData.getDiet().getAlimentosEvitar());
+        diet.setPreferenciaAlimentaria(fullData.getDiet().getPreferenciaAlimentaria());
+        diet.setDistribucionMacronutrientes(fullData.getDiet().getDistribucionMacronutrientes());
+        diet.setDisponibilidadCocinar(fullData.getDiet().getDisponibilidadCocinar());
+        diet.setPreferenciasCoccion(fullData.getDiet().getPreferenciasCoccion());
         dietRepository.save(diet);
 
         // Training
@@ -78,7 +112,23 @@ public class UserService {
             training = new Training();
             training.setUser(userEntity);
         }
-        training.setKilometrosRecorridos(fullData.getTraining().getKilometrosRecorridos());
+
+        training.setEjercicioDiario(fullData.getTraining().getEjercicioDiario());
+        training.setCantidadEjerciciosPorDia(fullData.getTraining().getCantidadEjerciciosPorDia());
+        training.setFrecuenciaEntrenamientoSemanal(fullData.getTraining().getFrecuenciaEntrenamientoSemanal());
+        training.setTiempoDisponiblePorDia(fullData.getTraining().getTiempoDisponiblePorDia());
+        training.setNivelExperiencia(fullData.getTraining().getNivelExperiencia());
+        training.setPreferenciaEjercicios(fullData.getTraining().getPreferenciaEjercicios());
+        training.setEquipamientoDisponible(fullData.getTraining().getEquipamientoDisponible());
+        training.setAreasMejorar(fullData.getTraining().getAreasMejorar());
+        training.setLesionesLimitaciones(fullData.getTraining().getLesionesLimitaciones());
+        training.setTipoCuerpo(fullData.getTraining().getTipoCuerpo());
+        training.setPreferenciaIndoorOutdoor(fullData.getTraining().getPreferenciaIndoorOutdoor());
+        training.setCondicionesMedicas(fullData.getTraining().getCondicionesMedicas());
+        training.setPreferenciaEstiloEntrenamiento(fullData.getTraining().getPreferenciaEstiloEntrenamiento());
+        training.setHorasSueno(fullData.getTraining().getHorasSueno());
+
+
         trainingRepository.save(training);
 
         // First login update
@@ -95,16 +145,46 @@ public class UserService {
             UserEntity userEntity = user.get();
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setName(userEntity.getName());
+
+            userDTO.setAltura(userEntity.getAltura());
+            userDTO.setEdad(userEntity.getEdad());
+            userDTO.setSexo(userEntity.getSexo());
+            userDTO.setPesoActualizado(userEntity.getPesoActualizado());
+            userDTO.setPesoInicial(userEntity.getPesoInicial());
+            userDTO.setEstiloVida(userEntity.getEstiloVida());
+            userDTO.setSuplementos(userEntity.getSuplementos());
+            userDTO.setObjetivo(userEntity.getObjetivo());
 
 
             Diet diet = dietRepository.findByUser(userEntity);
             DietDTO dietDTO = new DietDTO();
-            dietDTO.setCalorias(diet.getCalorias());
+            dietDTO.setAlergias(diet.getAlergias());
+            dietDTO.setIntolerancias(diet.getIntolerancias());
+            dietDTO.setNumeroComidas(diet.getNumeroComidas());
+            dietDTO.setAlimentosPreferidos(diet.getAlimentosPreferidos());
+            dietDTO.setAlimentosEvitar(diet.getAlimentosEvitar());
+            dietDTO.setPreferenciaAlimentaria(diet.getPreferenciaAlimentaria());
+            dietDTO.setDistribucionMacronutrientes(diet.getDistribucionMacronutrientes());
+            dietDTO.setDisponibilidadCocinar(diet.getDisponibilidadCocinar());
+            dietDTO.setPreferenciasCoccion(diet.getPreferenciasCoccion());
+
 
             Training training = trainingRepository.findByUser(userEntity);
             TrainingDTO trainingDTO = new TrainingDTO();
-            trainingDTO.setKilometrosRecorridos(training.getKilometrosRecorridos());
+            trainingDTO.setEjercicioDiario(training.getEjercicioDiario());
+            trainingDTO.setCantidadEjerciciosPorDia(training.getCantidadEjerciciosPorDia());
+            trainingDTO.setFrecuenciaEntrenamientoSemanal(training.getFrecuenciaEntrenamientoSemanal());
+            trainingDTO.setTiempoDisponiblePorDia(training.getTiempoDisponiblePorDia());
+            trainingDTO.setNivelExperiencia(training.getNivelExperiencia());
+            trainingDTO.setPreferenciaEjercicios(training.getPreferenciaEjercicios());
+            trainingDTO.setEquipamientoDisponible(training.getEquipamientoDisponible());
+            trainingDTO.setAreasMejorar(training.getAreasMejorar());
+            trainingDTO.setLesionesLimitaciones(training.getLesionesLimitaciones());
+            trainingDTO.setTipoCuerpo(training.getTipoCuerpo());
+            trainingDTO.setPreferenciaIndoorOutdoor(training.getPreferenciaIndoorOutdoor());
+            trainingDTO.setCondicionesMedicas(training.getCondicionesMedicas());
+            trainingDTO.setPreferenciaEstiloEntrenamiento(training.getPreferenciaEstiloEntrenamiento());
+            trainingDTO.setHorasSueno(training.getHorasSueno());
 
 
             FullDataDTO fullDataDTO = new FullDataDTO();

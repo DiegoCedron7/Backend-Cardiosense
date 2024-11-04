@@ -1,37 +1,40 @@
-package com.cardiosense.cardiosense.model.User.Info;
+package com.cardiosense.cardiosense.model.Diet;
 
-import com.cardiosense.cardiosense.model.User.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "diet_info")
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Diet {
+@AllArgsConstructor
+public class DietRequest {
 
-    @Id
-    private String id;
+    // Todas estas las obtendré de la Información de Usuario
+    private int pesoInicial;
+    private String pesoActualizado;
+    private int altura;
+    private int edad;
+    private String sexo;
+    private String tipoCuerpo;
+    private String residencia;
 
-    @DBRef
-    private UserEntity user;
+    private String nivelActividad;
+    private int porcentajeGrasa;
+    private String condicionesMedicas;
 
     private int numeroComidas;
     private String alergias;
+    private String objetivo;
     private List<String> alimentosPreferidos;
     private List<String> alimentosEvitar;
     private List<String> intolerancias;
     private String preferenciaAlimentaria;
     private String distribucionMacronutrientes;
+    private List<String> suplementos;
     private int disponibilidadCocinar;
     private List<String> preferenciasCoccion;
-
 }

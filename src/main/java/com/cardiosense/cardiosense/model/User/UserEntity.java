@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "users")
 @Data
 @Builder
@@ -23,6 +25,16 @@ public class UserEntity {
     private String role = "user";
     private String createdAt = String.valueOf(System.currentTimeMillis());
     private boolean firstLogin = true;
+
+    // Datos generales del usuario.
+    private String objetivo;
+    private List<String> suplementos;
+    private String estiloVida;
+    private Integer pesoInicial;
+    private Integer pesoActualizado;
+    private Integer altura;
+    private Integer edad;
+    private String sexo;
 
 
 }
