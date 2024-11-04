@@ -39,71 +39,69 @@ public class UserService {
         return userRepository.save(userEntity);
     }
 
-    public Optional<UserEntity> updateUser(String id, UserEntity userDTO) {
 
-        if (id == null) return Optional.empty();
+    public void saveOrUpdateData(String id, FullData fullData) {
+        Optional<UserEntity> userOptional = userRepository.findById(id);
 
-        Optional<UserEntity> user = userRepository.findById(id);
-
-        if (user.isPresent()) {
-            UserEntity userEntity = user.get();
-            userEntity.setName(userDTO.getName());
-            userEntity.setLastname(userDTO.getLastname());
-            userEntity.setDocumentType(userDTO.getDocumentType());
-            userEntity.setPhone(userDTO.getPhone());
-            userEntity.setAddress(userDTO.getAddress());
-            userEntity.setEmail(userDTO.getEmail());
-            userEntity.setPassword(userDTO.getPassword());
-            userEntity.setImage(userDTO.getImage());
-            return Optional.of(userRepository.save(userEntity));
-        }
-
-        return Optional.empty();
-    }
-
-    public void saveData(String id, FullData fullData) {
-        Optional<UserEntity> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            UserEntity userEntity = user.get();
-
-            if (userEntity.isFirstLogin()) {
-                userEntity.setFirstLogin(false);
-                userRepository.save(userEntity);
-            }
-
-            // Guardar Dieta
-            Diet diet = new Diet();
-            diet.setUser(userEntity);
-            diet.setCalorias(fullData.getDiet().getCalorias());
-            dietRepository.save(diet);
-
-            // Guardar Entrenamiento
-            Training training = new Training();
-            training.setUser(userEntity);
-            training.setKilometrosRecorridos(fullData.getTraining().getKilometrosRecorridos());
-            trainingRepository.save(training);
-
-        } else {
+        if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("User with id " + id + " not found");
         }
+
+        UserEntity userEntity = userOptional.get();
+
+        if (fullData.getUser() != null) {
+            if (fullData.getUser().getPhone() != null) {
+                userEntity.setPhone(fullData.getUser().getPhone());
+            }
+            if (fullData.getUser().getAddress() != null) {
+                userEntity.setAddress(fullData.getUser().getAddress());
+            }
+            if (fullData.getUser().getDocumentType() != null) {
+                userEntity.setDocumentType(fullData.getUser().getDocumentType());
+            }
+        }
+
+        userRepository.save(userEntity);
+
+        // Diet
+        Diet diet = dietRepository.findByUser(userEntity);
+        if (diet == null) {
+            diet = new Diet();
+            diet.setUser(userEntity);
+        }
+        diet.setCalorias(fullData.getDiet().getCalorias());
+        dietRepository.save(diet);
+
+        // Training
+        Training training = trainingRepository.findByUser(userEntity);
+        if (training == null) {
+            training = new Training();
+            training.setUser(userEntity);
+        }
+        training.setKilometrosRecorridos(fullData.getTraining().getKilometrosRecorridos());
+        trainingRepository.save(training);
+
+        // First login update
+        if (userEntity.isFirstLogin()) {
+            userEntity.setFirstLogin(false);
+            userRepository.save(userEntity);
+        }
     }
+
 
     public Optional<FullDataDTO> getData(String id) {
         Optional<UserEntity> user = userRepository.findById(id);
         if (user.isPresent()) {
             UserEntity userEntity = user.get();
 
-            // Convertir UserEntity a UserDTO
             UserDTO userDTO = new UserDTO();
             userDTO.setName(userEntity.getName());
 
 
-            // Convertir Diet a DietDataDTO
             Diet diet = dietRepository.findByUser(userEntity);
             DietDTO dietDTO = new DietDTO();
             dietDTO.setCalorias(diet.getCalorias());
 
-            // Convertir Training a TrainingDataDTO
             Training training = trainingRepository.findByUser(userEntity);
             TrainingDTO trainingDTO = new TrainingDTO();
             trainingDTO.setKilometrosRecorridos(training.getKilometrosRecorridos());

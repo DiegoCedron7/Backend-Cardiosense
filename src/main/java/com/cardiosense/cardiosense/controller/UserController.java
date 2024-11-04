@@ -40,17 +40,11 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserEntity> updateUser(@PathVariable String id, @RequestBody UserEntity userEntity) {
-        Optional<UserEntity> updatedUser = userService.updateUser(id, userEntity);
-        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
 
     @PostMapping("/{id}/save-data")
     public ResponseEntity<String> saveData(@PathVariable String id, @RequestBody FullData fullData) {
         try {
-            userService.saveData(id, fullData);
+            userService.saveOrUpdateData(id, fullData);
             return ResponseEntity.ok("Data saved successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
