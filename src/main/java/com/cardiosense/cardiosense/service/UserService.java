@@ -66,9 +66,6 @@ public class UserService {
         return false;
     }
 
-    public boolean existsById(String id) {
-        return userRepository.existsById(id);
-    }
 
 
 }
