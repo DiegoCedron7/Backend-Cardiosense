@@ -4,6 +4,7 @@ import com.cardiosense.cardiosense.model.Diet.DietPlan;
 import com.cardiosense.cardiosense.model.Training.TrainingPlan;
 import com.cardiosense.cardiosense.service.GeneratorService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,9 @@ public class DietController {
     private final GeneratorService generatorService;
 
     @GetMapping("/generate/{id}")
-    public void generateDiet(@PathVariable String id) {
-        generatorService.generateDiet(id);
+    public ResponseEntity<String> generateDiet(@PathVariable String id) {
+        String message = generatorService.generateDiet(id);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping("/{id}")

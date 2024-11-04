@@ -16,13 +16,13 @@ public class TrainingController {
     private final GeneratorService generatorService;
 
     @GetMapping("/generate/{id}")
-    public void generateTraining(@PathVariable String id) {
-        generatorService.generateTraining(id);
+    public ResponseEntity<String> generateTraining(@PathVariable String id) {
+        String message = generatorService.generateTraining(id);
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping("/{id}")
     public TrainingPlan getTrainingPlan(@PathVariable String id) {
-
         return generatorService.getTrainingPlan(id);
     }
 }
