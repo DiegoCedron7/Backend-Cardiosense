@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class UserDTO {
+    private String _id;
     private String objetivo;
     private List<String> suplementos;
     private String estiloVida;
