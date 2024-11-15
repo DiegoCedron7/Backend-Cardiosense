@@ -14,14 +14,12 @@ public class UserDTO {
     private Integer pesoActualizado;
     private Integer altura;
     private Integer edad;
+    private String sexo;
 
     // Datos generales del usuario.
-    private String sexo;
     private String name;
-    private String lastname;
-    private String documentType;
-    private Integer documentNumber;
-    private Number phone;
-    private String address;
     private String email;
+    private String image;
+    private boolean firstLogin;
+    private String createdAt;
 }

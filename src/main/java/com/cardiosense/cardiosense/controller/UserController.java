@@ -40,6 +40,11 @@ public class UserController {
         return ResponseEntity.ok(createdUser);
     }
 
+    @GetMapping("/by-email")
+    public ResponseEntity<UserEntity> getUserByEmail(@RequestParam String email) {
+        Optional<UserEntity> user = userService.getUserByEmail(email);
+        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 
     @PostMapping("/{id}/save-data")

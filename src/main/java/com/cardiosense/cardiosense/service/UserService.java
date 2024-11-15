@@ -29,6 +29,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Optional<UserEntity> getUserByEmail(String email) {
+        return email == null ? Optional.empty() : userRepository.findByEmail(email);
+    }
+
     public Optional<UserEntity> getUserById(String id) {
         return id == null ? Optional.empty() : userRepository.findById(id);
     }
@@ -54,9 +58,6 @@ public class UserService {
     private void updateUserInfo(UserEntity userEntity, FullData fullData) {
         var userInfo = fullData.getUser();
         if (userInfo != null) {
-            Optional.ofNullable(userInfo.getPhone()).ifPresent(userEntity::setPhone);
-            Optional.ofNullable(userInfo.getAddress()).ifPresent(userEntity::setAddress);
-            Optional.ofNullable(userInfo.getDocumentType()).ifPresent(userEntity::setDocumentType);
             Optional.ofNullable(userInfo.getObjetivo()).ifPresent(userEntity::setObjetivo);
             Optional.ofNullable(userInfo.getSuplementos()).ifPresent(userEntity::setSuplementos);
             Optional.ofNullable(userInfo.getEstiloVida()).ifPresent(userEntity::setEstiloVida);
@@ -138,12 +139,7 @@ public class UserService {
         userDTO.setSuplementos(userEntity.getSuplementos());
         userDTO.setObjetivo(userEntity.getObjetivo());
         userDTO.setName(userEntity.getName());
-        userDTO.setDocumentType(userEntity.getDocumentType());
-        userDTO.setAddress(userEntity.getAddress());
-        userDTO.setPhone(userEntity.getPhone());
-        userDTO.setDocumentNumber(userEntity.getDocumentNumber());
         userDTO.setEmail(userEntity.getEmail());
-        userDTO.setLastname(userEntity.getLastname());
         return userDTO;
     }
 

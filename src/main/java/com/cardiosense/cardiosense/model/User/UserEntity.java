@@ -1,5 +1,6 @@
 package com.cardiosense.cardiosense.model.User;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -14,18 +15,13 @@ public class UserEntity {
     @Id
     private String id;
     private String name;
-    private String lastname;
-    private String documentType;
-    private Integer documentNumber;
-    private Number phone;
-    private String address;
     private String email;
-    private String password;
-    private String image = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
-    private String authStrategy = "local";
-    private String role = "user";
-    private String createdAt = String.valueOf(System.currentTimeMillis());
-    private boolean firstLogin = true;
+    private String image;
+    private boolean firstLogin;
+    private String createdAt;
+
+    @JsonProperty("user_id")
+    private String userId;
 
     private String objetivo;
     private List<String> suplementos;
@@ -36,7 +32,5 @@ public class UserEntity {
     private Integer edad;
     private String sexo;
 
-    public String getUserId() {
-        return (name + lastname).toLowerCase() + "cardiosense";
-    }
+
 }
