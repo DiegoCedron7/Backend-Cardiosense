@@ -27,7 +27,6 @@ public class UserEntity {
     private String createdAt = String.valueOf(System.currentTimeMillis());
     private boolean firstLogin = true;
 
-    // Datos generales del usuario.
     private String objetivo;
     private List<String> suplementos;
     private String estiloVida;
@@ -37,7 +36,7 @@ public class UserEntity {
     private Integer edad;
     private String sexo;
 
-
+    public String getUserId() {
+        return (name + lastname).toLowerCase() + "cardiosense";
+    }
 }
-
-
