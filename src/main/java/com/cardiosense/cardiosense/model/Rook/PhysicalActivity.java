@@ -1,9 +1,8 @@
-package com.cardiosense.cardiosense.model;
+package com.cardiosense.cardiosense.model.Rook;
 
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -12,9 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(collection = "rook_events")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class RookEvents {
+@Document(collection = "physical_activity")
+public class PhysicalActivity {
 
     @Id
     private String id;

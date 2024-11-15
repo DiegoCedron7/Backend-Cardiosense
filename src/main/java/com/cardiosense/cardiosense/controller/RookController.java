@@ -1,6 +1,6 @@
 package com.cardiosense.cardiosense.controller;
 
-import com.cardiosense.cardiosense.model.RookEvents;
+import com.cardiosense.cardiosense.model.Rook.PhysicalActivity;
 import com.cardiosense.cardiosense.service.RookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +13,8 @@ public class RookController {
     private final RookService rookService;
 
     @PostMapping()
-    public ResponseEntity<?> saveRookEvents(@RequestBody RookEvents rookEvents) {
-        rookService.saveRookEvents(rookEvents);
+    public ResponseEntity<?> saveRookEvents(@RequestBody PhysicalActivity physicalActivity) {
+        rookService.saveRookEvents(physicalActivity);
         return ResponseEntity.ok().build();
     }
 
