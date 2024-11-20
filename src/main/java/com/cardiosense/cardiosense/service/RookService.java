@@ -32,7 +32,7 @@ public class RookService {
         }
 
         switch (dataStructure) {
-            case "physical_activity":
+            case "activity_event":
                 PhysicalActivity physicalActivity = objectMapper.convertValue(request, PhysicalActivity.class);
                 savePhysicalActivity(physicalActivity);
                 break;
