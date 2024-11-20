@@ -40,7 +40,7 @@ public class GeneratorService {
 
     public String generateTraining(String userId) {
         return userService.getUserById(userId)
-                .map(userEntity -> handleTrainingGeneration(userEntity))
+                .map(this::handleTrainingGeneration)
                 .orElse("Usuario no encontrado.");
     }
 
@@ -97,7 +97,7 @@ public class GeneratorService {
 
     public String generateDiet(String userId) {
         return userService.getUserById(userId)
-                .map(userEntity -> handleDietGeneration(userEntity))
+                .map(this::handleDietGeneration)
                 .orElse("Usuario no encontrado.");
     }
 

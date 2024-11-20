@@ -25,6 +25,13 @@ public class UserService {
     private final DietRepository dietRepository;
     private final TrainingRepository trainingRepository;
 
+
+    public void changeWeight(String id, int newWeight) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+        userEntity.setPesoActualizado(newWeight);
+        userRepository.save(userEntity);
+    }
+
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
