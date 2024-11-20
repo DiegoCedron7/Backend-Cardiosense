@@ -24,4 +24,9 @@ public class RookController {
         }
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<?> ping() {
+        return ResponseEntity.ok("pong");
+    }
+
 }

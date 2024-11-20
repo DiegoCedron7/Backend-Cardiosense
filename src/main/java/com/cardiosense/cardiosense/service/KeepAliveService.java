@@ -16,7 +16,7 @@ public class KeepAliveService {
 
     @Scheduled(fixedRate = 600000)
     public void sendKeepAlive() {
-        String url = "";
+        String url = "/rook/ping";
         try {
             restTemplate.getForObject(url, String.class);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
