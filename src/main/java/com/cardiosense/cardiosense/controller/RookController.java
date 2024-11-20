@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.*;
 public class RookController {
     private final RookService rookService;
 
-    @PostMapping()
-    public ResponseEntity<?> saveRookEvents(@RequestBody PhysicalActivity physicalActivity) {
-        rookService.saveRookEvents(physicalActivity);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping()
-    public ResponseEntity<?> getRookEvents() {
-        return ResponseEntity.ok(rookService.getRookEvents());
+    @PostMapping
+    public ResponseEntity<?> saveRook(@RequestBody Object request) {
+        try {
+            rookService.saveRookEntity(request);
+            return ResponseEntity.ok("Data saved successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
     }
 
 }
