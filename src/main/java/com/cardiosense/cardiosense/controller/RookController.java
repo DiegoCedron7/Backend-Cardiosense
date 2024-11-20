@@ -47,7 +47,7 @@ public class RookController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal server error");
+            return ResponseEntity.status(500).body("Internal server error" + e.getMessage());
         }
     }
 

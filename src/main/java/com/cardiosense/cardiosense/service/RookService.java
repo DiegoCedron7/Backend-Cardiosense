@@ -41,8 +41,12 @@ public class RookService {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         String userId = user.getUserId();
+        List<HealthScore> healthScores = healthScoreRepository.findByUserIdOrderByDatetimeString(userId);
 
-        return healthScoreRepository.findByUserIdOrderByDatetimeString(userId);
+        if (healthScores.isEmpty()) {
+            throw new IllegalArgumentException("Health score not found");
+        }
+        return healthScores.get(0);
     }
 
     public void saveRookEntity(Object request) {
