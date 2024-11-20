@@ -5,11 +5,14 @@ import com.cardiosense.cardiosense.model.Rook.HealthScore;
 import com.cardiosense.cardiosense.model.Rook.PhysicalActivity;
 import com.cardiosense.cardiosense.model.Rook.SleepSummary;
 import com.cardiosense.cardiosense.model.Rook.PhysicalSummary;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.repository.Rook.*;
+import com.cardiosense.cardiosense.repository.User.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,7 +24,26 @@ public class RookService {
     private final HealthScoreRepository healthScoreRepository;
     private final BodySummaryRepository bodySummaryRepository;
     private final SleepSummaryRepository sleepSummaryRepository;
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+
+    public List<PhysicalActivity> getPhysicalActivityByUser(String id, String date) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String userId = user.getUserId();
+        String regexDate = "^" + date;
+
+
+        return physicalActivityRepository.findByUserIdOrderByDatetimeString(userId, regexDate);
+    }
+
+    public HealthScore getHealthScoreByUser(String id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String userId = user.getUserId();
+
+        return healthScoreRepository.findByUserIdOrderByDatetimeString(userId);
+    }
 
     public void saveRookEntity(Object request) {
         var map = objectMapper.convertValue(request, Map.class);

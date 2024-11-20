@@ -24,6 +24,33 @@ public class RookController {
         }
     }
 
+
+    @GetMapping("/physical-activity/{userId}")
+    public ResponseEntity<?> getPhysicalActivityByUser(@PathVariable String userId, @RequestParam String date) {
+        try {
+            if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD");
+            }
+            return ResponseEntity.ok(rookService.getPhysicalActivityByUser(userId, date));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+
+    @GetMapping("/health-score/{userId}")
+    public ResponseEntity<?> getHealthScoreByUser(@PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(rookService.getHealthScoreByUser(userId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
     @GetMapping("/ping")
     public ResponseEntity<?> ping() {
         return ResponseEntity.ok("pong");
