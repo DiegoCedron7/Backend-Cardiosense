@@ -24,6 +24,35 @@ public class RookController {
         }
     }
 
+    @GetMapping("/sleep-summary/{userId}")
+    public ResponseEntity<?> getSleepSummaryByUser(@PathVariable String userId, @RequestParam String date) {
+        try {
+            if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD");
+            }
+            return ResponseEntity.ok(rookService.getSleepSummaryByUser(userId, date));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    @GetMapping("/physical-summary/{userId}")
+    public ResponseEntity<?> getPhysicalSummaryByUser(@PathVariable String userId, @RequestParam String date) {
+        try {
+            if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD");
+            }
+            return ResponseEntity.ok(rookService.getPhysicalSummaryByUser(userId, date));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
 
     @GetMapping("/physical-activity/{userId}")
     public ResponseEntity<?> getPhysicalActivityByUser(@PathVariable String userId, @RequestParam String date) {

@@ -30,6 +30,32 @@ public class RookService {
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
+    public PhysicalSummary getPhysicalSummaryByUser(String id, String date) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String userId = user.getUserId();
+        String regexDate = "^" + date;
+        List<PhysicalSummary> physicalSummary = physicalSummaryRepository.findByUserIdOrderByDatetimeString(userId, regexDate);
+        if (physicalSummary.isEmpty()) {
+            throw new IllegalArgumentException("Physical summary not found");
+        }
+        return physicalSummary.get(0);
+    }
+
+    public SleepSummary getSleepSummaryByUser(String id, String date) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String userId = user.getUserId();
+        String regexDate = "^" + date;
+        List<SleepSummary> sleepSummary = sleepSummaryRepository.findByUserIdOrderByDatetimeString(userId, regexDate);
+
+        if (sleepSummary.isEmpty()) {
+            throw new IllegalArgumentException("Sleep summary not found");
+        }
+
+        return sleepSummary.get(0);
+    }
+
     public List<PhysicalActivity> getPhysicalActivityByUser(String id, String date) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
