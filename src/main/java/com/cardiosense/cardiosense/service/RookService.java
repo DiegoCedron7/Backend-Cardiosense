@@ -29,7 +29,6 @@ public class RookService {
     private final SleepSummaryRepository sleepSummaryRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
-    private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 
     public List<PhysicalActivity> getPhysicalActivityByUser(String id, String date) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -65,16 +64,6 @@ public class RookService {
             case "activity_event":
                 PhysicalActivity physicalActivity = objectMapper.convertValue(request, PhysicalActivity.class);
                 savePhysicalActivity(physicalActivity);
-                for (SseEmitter emitter : emitters) {
-                    try {
-                        emitter
-                                .send(SseEmitter.event()
-                                        .name("newMessage")
-                                        .data(physicalActivity.getPhysicalHealth().getEvents().getActivityEvent()));
-                    } catch (IOException e) {
-                        emitters.remove(emitter);
-                    }
-                }
                 break;
             case "physical_summary":
                 PhysicalSummary physicalSummary = objectMapper.convertValue(request, PhysicalSummary.class);
