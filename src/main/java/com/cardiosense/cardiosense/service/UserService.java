@@ -56,6 +56,8 @@ public class UserService {
         updateDietInfo(userEntity, fullData.getDiet());
         updateTrainingInfo(userEntity, fullData.getTraining());
 
+        userEntity.setPesoActualizado(0);
+
         if (userEntity.isFirstLogin()) {
             userEntity.setFirstLogin(false);
             userRepository.save(userEntity);
