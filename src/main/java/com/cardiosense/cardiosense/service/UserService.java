@@ -69,7 +69,12 @@ public class UserService {
             Optional.ofNullable(userInfo.getSuplementos()).ifPresent(userEntity::setSuplementos);
             Optional.ofNullable(userInfo.getEstiloVida()).ifPresent(userEntity::setEstiloVida);
             if (userInfo.getPesoInicial() != 0) userEntity.setPesoInicial(userInfo.getPesoInicial());
-            if (userInfo.getPesoActualizado() != 0) userEntity.setPesoActualizado(userInfo.getPesoActualizado());
+
+            if (userInfo.getPesoActualizado() != null) {
+                userEntity.setPesoActualizado(userInfo.getPesoActualizado());
+            } else {
+                userEntity.setPesoActualizado(userInfo.getPesoInicial());
+            }
             if (userInfo.getAltura() != 0) userEntity.setAltura(userInfo.getAltura());
             if (userInfo.getEdad() != 0) userEntity.setEdad(userInfo.getEdad());
             Optional.ofNullable(userInfo.getSexo()).ifPresent(userEntity::setSexo);
