@@ -32,5 +32,7 @@ public class UserEntity {
     private Integer edad;
     private String sexo;
 
+    private boolean subscription;
+
 
 }

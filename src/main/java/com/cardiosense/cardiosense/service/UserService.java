@@ -14,7 +14,9 @@ import com.cardiosense.cardiosense.repository.User.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -193,4 +195,56 @@ public class UserService {
         }
         return trainingDTO;
     }
+
+
+    public long countUsers() {
+        return userRepository.count();
+    }
+
+    public long countUsersBySubscription(boolean subscription) {
+        return userRepository.countBySubscription(subscription);
+    }
+
+    public double averageAge() {
+        List<UserEntity> users = userRepository.findAll();
+        double sum = 0;
+        for (UserEntity user : users) {
+            sum += user.getEdad();
+        }
+        return sum / users.size();
+    }
+
+    public Map<String, Double> averageWeight() {
+        List<UserEntity> users = userRepository.findAll();
+        double sum = 0;
+        int validUserCount = 0;
+        for (UserEntity user : users) {
+            if (user.getPesoActualizado() != null && user.getPesoActualizado() != 0) {
+                sum += user.getPesoActualizado();
+                validUserCount++;
+            } else if (user.getPesoInicial() != 0) {
+                sum += user.getPesoInicial();
+                validUserCount++;
+            }
+        }
+        if (validUserCount == 0) {
+            return Map.of("response", 0.0, "count", 0.0);
+        }
+
+        Map<String, Double> response = new HashMap<>();
+        response.put("response", sum / validUserCount);
+        response.put("valid-users", (double) validUserCount);
+        return response;
+    }
+
+
+    public double averageHeight() {
+        List<UserEntity> users = userRepository.findAll();
+        double sum = 0;
+        for (UserEntity user : users) {
+            sum += user.getAltura();
+        }
+        return sum / users.size();
+    }
+
 }

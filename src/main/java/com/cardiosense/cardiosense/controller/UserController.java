@@ -2,14 +2,16 @@ package com.cardiosense.cardiosense.controller;
 
 
 import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.FullDataDTO;
-import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.model.User.Info.FullData;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.service.GeneratorService;
 import com.cardiosense.cardiosense.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -77,5 +79,35 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> countUsers() {
+        long userCount = userService.countUsers();
+        return ResponseEntity.ok(Collections.singletonMap("response", userCount));
+    }
+
+    @GetMapping("/count-by-subscription")
+    public ResponseEntity<?> countUsersBySubscription(@RequestParam boolean subscription) {
+        long userCount = userService.countUsersBySubscription(subscription);
+        return ResponseEntity.ok(Collections.singletonMap("response", userCount));
+    }
+
+    @GetMapping("/average-age")
+    public ResponseEntity<?> averageAge() {
+        double avgAge = userService.averageAge();
+        return ResponseEntity.ok(Collections.singletonMap("response", avgAge));
+    }
+
+    @GetMapping("/average-weight")
+    public ResponseEntity<Map<String, Double>> averageWeight() {
+        Map<String, Double> result = userService.averageWeight();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/average-height")
+    public ResponseEntity<?> averageHeight() {
+        double avgHeight = userService.averageHeight();
+        return ResponseEntity.ok(Collections.singletonMap("response", avgHeight));
     }
 }

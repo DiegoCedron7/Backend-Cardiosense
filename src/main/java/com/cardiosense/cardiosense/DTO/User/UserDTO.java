@@ -22,4 +22,7 @@ public class UserDTO {
     private String image;
     private boolean firstLogin;
     private String createdAt;
+
+    // Pagó la suscripción.
+    private boolean subscription;
 }
