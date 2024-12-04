@@ -55,7 +55,9 @@ public class DietPlan {
     @Data
     public static class Dia {
         private String desayuno;
+        private String mediaManana;
         private String almuerzo;
+        private String merienda;
         private String cena;
     }
 }
