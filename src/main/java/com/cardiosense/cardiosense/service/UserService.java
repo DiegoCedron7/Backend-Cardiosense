@@ -26,10 +26,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -42,8 +39,15 @@ public class UserService {
     private final String ACCESS_TOKEN = "Bearer TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535";
 
     public void changeWeight(String id, int newWeight) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+        if (userEntity.getWeights() == null) {
+            userEntity.setWeights(new ArrayList<>());
+        }
         userEntity.setPesoActualizado(newWeight);
+        if (!userEntity.getWeights().contains(newWeight)) {
+            userEntity.getWeights().add(newWeight);
+        }
         userRepository.save(userEntity);
     }
 

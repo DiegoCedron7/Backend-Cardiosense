@@ -43,5 +43,6 @@ public class UserEntity {
     private String preferenceId;
     private String paymentId;
 
+    private List<Integer> weights;
 
 }
