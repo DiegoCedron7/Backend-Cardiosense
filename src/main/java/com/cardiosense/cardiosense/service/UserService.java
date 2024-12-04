@@ -4,6 +4,8 @@ import com.cardiosense.cardiosense.DTO.User.UserDTO;
 import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.DietDTO;
 import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.FullDataDTO;
 import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.TrainingDTO;
+import com.cardiosense.cardiosense.model.MercadoPago.EOrderStatus;
+import com.cardiosense.cardiosense.model.MercadoPago.MercadoPagoPayment;
 import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.model.User.Info.Diet;
 import com.cardiosense.cardiosense.model.User.Info.FullData;
@@ -11,9 +13,19 @@ import com.cardiosense.cardiosense.model.User.Info.Training;
 import com.cardiosense.cardiosense.repository.User.Info.DietRepository;
 import com.cardiosense.cardiosense.repository.User.Info.TrainingRepository;
 import com.cardiosense.cardiosense.repository.User.UserRepository;
+import com.cardiosense.cardiosense.service.MercadoPago.MercadoPagoService;
+import com.google.gson.Gson;
+import com.mercadopago.exceptions.MPApiException;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.preference.Preference;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +38,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final DietRepository dietRepository;
     private final TrainingRepository trainingRepository;
-
+    private final MercadoPagoService mercadoPagoService;
+    private final String ACCESS_TOKEN = "Bearer TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535";
 
     public void changeWeight(String id, int newWeight) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
@@ -247,4 +260,83 @@ public class UserService {
         return sum / users.size();
     }
 
+    public Preference createPreference(Optional<UserEntity> user) throws MPException, MPApiException {
+        Preference preference = mercadoPagoService.createPreference(user);
+        if (user.isPresent()) {
+            UserEntity userEntity = user.get();
+            userEntity.setPreferenceId(preference.getId());
+            userEntity.setPaymentId("-");
+            userEntity.setStatus(EOrderStatus.PENDING);
+            userRepository.save(userEntity);
+        } else {
+            throw new MPException("Failed to create Preference");
+        }
+        return preference;
+    }
+
+    public String getStatusPayment(MercadoPagoPayment mercadoPagoPayment) {
+        try {
+            String paymentId = mercadoPagoPayment.getData().id;
+            String url = "https://api.mercadopago.com/v1/payments/" + paymentId;
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder().uri(new URI(url)).header("Authorization", ACCESS_TOKEN).build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            Gson gson = new Gson();
+            Map<String, Object> map = gson.fromJson(response.body(), Map.class);
+
+            String status = map.get("status").toString();
+
+            String externalIdentifier = map.get("external_reference") != null ? map.get("external_reference").toString() : null;
+
+            try {
+                if (externalIdentifier == null) {
+                    return "Referencia externa no encontrada";
+                }
+                UserEntity userEntity = userRepository.findById(externalIdentifier).orElse(null);
+                if (userEntity == null) {
+                    return "Usuario no encontrado con ID: " + externalIdentifier;
+                }
+                if (userEntity.getStatus().equals(EOrderStatus.SUCCESS)) {
+                    return "Orden ya pagada";
+                }
+                userEntity.setPaymentId(paymentId);
+                userRepository.save(userEntity);
+                updateOrderStatus(externalIdentifier, status);
+            } catch (Exception e) {
+                throw new RuntimeException("Error al agregar el ID de pago a la orden");
+            }
+            return response.body();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener el estado del pago", e);
+        }
+    }
+
+    private void updateOrderStatus(String externalIdentifier, String status) {
+        UserEntity user = userRepository.findById(externalIdentifier).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("Orden no encontrada con ID: " + externalIdentifier);
+        }
+        switch (status) {
+            case "approved":
+                user.setStatus(EOrderStatus.SUCCESS);
+                user.setSubscription(true);
+                userRepository.save(user);
+                break;
+            case "pending":
+                user.setStatus(EOrderStatus.PENDING);
+                userRepository.save(user);
+                break;
+            case "rejected":
+                user.setStatus(EOrderStatus.DENIED);
+                userRepository.save(user);
+                break;
+            default:
+                break;
+        }
+    }
 }
+
+
