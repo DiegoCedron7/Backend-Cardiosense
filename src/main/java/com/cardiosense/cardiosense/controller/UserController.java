@@ -40,6 +40,16 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/weights/{id}")
+    public ResponseEntity<Map<String, Integer>> getWeights(@PathVariable String id) {
+        Map<String, Integer> weights = userService.getWeights(id);
+        if (weights == null) {
+            Map<String, Integer> emptyMap = Collections.emptyMap();
+            return ResponseEntity.ok(emptyMap);
+        }
+        return ResponseEntity.ok(userService.getWeights(id));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable String id) {
         Optional<UserEntity> user = userService.getUserById(id);
@@ -102,8 +112,7 @@ public class UserController {
 
     @GetMapping("/count")
     public ResponseEntity<?> countUsers() {
-        long userCount = userService.countUsers();
-        return ResponseEntity.ok(Collections.singletonMap("response", userCount));
+        return ResponseEntity.ok(Collections.singletonMap("response", userService.countUsersByMonth()));
     }
 
     @GetMapping("/count-by-subscription")
@@ -112,21 +121,5 @@ public class UserController {
         return ResponseEntity.ok(Collections.singletonMap("response", userCount));
     }
 
-    @GetMapping("/average-age")
-    public ResponseEntity<?> averageAge() {
-        double avgAge = userService.averageAge();
-        return ResponseEntity.ok(Collections.singletonMap("response", avgAge));
-    }
 
-    @GetMapping("/average-weight")
-    public ResponseEntity<Map<String, Double>> averageWeight() {
-        Map<String, Double> result = userService.averageWeight();
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/average-height")
-    public ResponseEntity<?> averageHeight() {
-        double avgHeight = userService.averageHeight();
-        return ResponseEntity.ok(Collections.singletonMap("response", avgHeight));
-    }
 }

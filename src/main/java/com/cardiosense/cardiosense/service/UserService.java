@@ -6,10 +6,10 @@ import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.FullDataDTO;
 import com.cardiosense.cardiosense.DTO.User.UserInfoDTO.TrainingDTO;
 import com.cardiosense.cardiosense.model.MercadoPago.EOrderStatus;
 import com.cardiosense.cardiosense.model.MercadoPago.MercadoPagoPayment;
-import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.model.User.Info.Diet;
 import com.cardiosense.cardiosense.model.User.Info.FullData;
 import com.cardiosense.cardiosense.model.User.Info.Training;
+import com.cardiosense.cardiosense.model.User.UserEntity;
 import com.cardiosense.cardiosense.repository.User.Info.DietRepository;
 import com.cardiosense.cardiosense.repository.User.Info.TrainingRepository;
 import com.cardiosense.cardiosense.repository.User.UserRepository;
@@ -19,14 +19,18 @@ import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -38,18 +42,24 @@ public class UserService {
     private final MercadoPagoService mercadoPagoService;
     private final String ACCESS_TOKEN = "Bearer TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535";
 
+
     public void changeWeight(String id, int newWeight) {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+
         if (userEntity.getWeights() == null) {
-            userEntity.setWeights(new ArrayList<>());
+            userEntity.setWeights(new HashMap<>());
         }
+
+        String currentDate = LocalDate.now().toString();
+
         userEntity.setPesoActualizado(newWeight);
-        if (!userEntity.getWeights().contains(newWeight)) {
-            userEntity.getWeights().add(newWeight);
-        }
+
+        userEntity.getWeights().put(currentDate, newWeight);
+
         userRepository.save(userEntity);
     }
+
 
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
@@ -57,6 +67,13 @@ public class UserService {
 
     public Optional<UserEntity> getUserByEmail(String email) {
         return email == null ? Optional.empty() : userRepository.findByEmail(email);
+    }
+
+    public Map<String, Integer> getWeights(String id) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+
+        return userEntity.getWeights();
     }
 
     public Optional<UserEntity> getUserById(String id) {
@@ -83,7 +100,9 @@ public class UserService {
         }
     }
 
+
     private void updateUserInfo(UserEntity userEntity, FullData fullData) {
+        String currentDate = LocalDate.now().toString();
         var userInfo = fullData.getUser();
         if (userInfo != null) {
             Optional.ofNullable(userInfo.getObjetivo()).ifPresent(userEntity::setObjetivo);
@@ -93,8 +112,13 @@ public class UserService {
 
             if (userInfo.getPesoActualizado() != null) {
                 userEntity.setPesoActualizado(userInfo.getPesoActualizado());
+                if (userEntity.getWeights() == null) {
+                    userEntity.setWeights(new HashMap<>());
+                }
+                userEntity.getWeights().put(currentDate, userInfo.getPesoActualizado());
             } else {
                 userEntity.setPesoActualizado(userInfo.getPesoInicial());
+                userEntity.getWeights().put(LocalDate.now().toString(), userInfo.getPesoInicial());
             }
             if (userInfo.getAltura() != 0) userEntity.setAltura(userInfo.getAltura());
             if (userInfo.getEdad() != 0) userEntity.setEdad(userInfo.getEdad());
@@ -103,10 +127,10 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
+
     private void updateDietInfo(UserEntity userEntity, Diet dietData) {
         Diet diet = Optional.ofNullable(dietRepository.findByUser(userEntity)).orElse(new Diet());
         diet.setUser(userEntity);
-
 
         Optional.ofNullable(dietData).ifPresent(d -> {
             diet.setAlergias(d.getAlergias());
@@ -214,56 +238,6 @@ public class UserService {
     }
 
 
-    public long countUsers() {
-        return userRepository.count();
-    }
-
-    public long countUsersBySubscription(boolean subscription) {
-        return userRepository.countBySubscription(subscription);
-    }
-
-    public double averageAge() {
-        List<UserEntity> users = userRepository.findAll();
-        double sum = 0;
-        for (UserEntity user : users) {
-            sum += user.getEdad();
-        }
-        return sum / users.size();
-    }
-
-    public Map<String, Double> averageWeight() {
-        List<UserEntity> users = userRepository.findAll();
-        double sum = 0;
-        int validUserCount = 0;
-        for (UserEntity user : users) {
-            if (user.getPesoActualizado() != null && user.getPesoActualizado() != 0) {
-                sum += user.getPesoActualizado();
-                validUserCount++;
-            } else if (user.getPesoInicial() != 0) {
-                sum += user.getPesoInicial();
-                validUserCount++;
-            }
-        }
-        if (validUserCount == 0) {
-            return Map.of("response", 0.0, "count", 0.0);
-        }
-
-        Map<String, Double> response = new HashMap<>();
-        response.put("response", sum / validUserCount);
-        response.put("valid-users", (double) validUserCount);
-        return response;
-    }
-
-
-    public double averageHeight() {
-        List<UserEntity> users = userRepository.findAll();
-        double sum = 0;
-        for (UserEntity user : users) {
-            sum += user.getAltura();
-        }
-        return sum / users.size();
-    }
-
     public Preference createPreference(Optional<UserEntity> user) throws MPException, MPApiException {
         Preference preference = mercadoPagoService.createPreference(user);
         if (user.isPresent()) {
@@ -341,6 +315,29 @@ public class UserService {
                 break;
         }
     }
+
+    public Map<String, Integer> countUsersByMonth() {
+        Map<String, Integer> usersByMonth = new HashMap<>();
+        List<UserEntity> users = userRepository.findAll();
+
+        for (UserEntity user : users) {
+            String createdAt = user.getCreatedAt();
+            String[] date = createdAt.split("T");
+            String[] month = date[0].split("-");
+            String monthYear = month[0] + "-" + month[1];
+            if (usersByMonth.containsKey(monthYear)) {
+                usersByMonth.put(monthYear, usersByMonth.get(monthYear) + 1);
+            } else {
+                usersByMonth.put(monthYear, 1);
+            }
+        }
+        return usersByMonth;
+    }
+
+    public long countUsersBySubscription(boolean subscription) {
+        return userRepository.countBySubscription(subscription);
+    }
+
 }
 
 

@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "users")
 @Data
@@ -42,7 +43,8 @@ public class UserEntity {
     private EOrderStatus status;
     private String preferenceId;
     private String paymentId;
+    private String role;
 
-    private List<Integer> weights;
+    private Map<String,Integer> weights;
 
 }
