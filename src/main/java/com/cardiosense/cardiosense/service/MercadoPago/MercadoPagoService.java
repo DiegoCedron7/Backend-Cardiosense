@@ -20,7 +20,7 @@ import java.util.Optional;
 public class MercadoPagoService {
 
     public MercadoPagoService() {
-        String ACCESS_TOKEN = "TEST-8021851533821614-032518-5e2291ab742081851d0e8355030bbab8-485417535";
+        String ACCESS_TOKEN = "TEST-6601521810006519-120501-9a9343e8bee92e590a242249e2b7f611-485417535";
         MercadoPagoConfig.setAccessToken(ACCESS_TOKEN);
     }
 
