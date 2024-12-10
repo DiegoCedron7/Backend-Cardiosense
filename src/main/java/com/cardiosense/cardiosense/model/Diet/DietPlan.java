@@ -1,6 +1,7 @@
 package com.cardiosense.cardiosense.model.Diet;
 
 import com.cardiosense.cardiosense.model.User.UserEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,8 +56,13 @@ public class DietPlan {
     @Data
     public static class Dia {
         private String desayuno;
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String mediaManana;
+
         private String almuerzo;
+
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String merienda;
         private String cena;
     }

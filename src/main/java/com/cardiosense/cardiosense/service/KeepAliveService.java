@@ -14,7 +14,7 @@ public class KeepAliveService {
 
     private final RestTemplate restTemplate;
 
-    @Scheduled(fixedRate = 600000)
+    //@Scheduled(fixedRate = 600000)
     public void sendKeepAlive() {
         String url = "https://backend-cardiosense.onrender.com/rook/ping";
         try {

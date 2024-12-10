@@ -45,6 +45,5 @@ public class UserEntity {
     private String paymentId;
     private String role;
 
-    private Map<String,Integer> weights;
 
 }

@@ -47,15 +47,11 @@ public class UserService {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
 
-        if (userEntity.getWeights() == null) {
-            userEntity.setWeights(new HashMap<>());
-        }
 
         String currentDate = LocalDate.now().toString();
 
         userEntity.setPesoActualizado(newWeight);
 
-        userEntity.getWeights().put(currentDate, newWeight);
 
         userRepository.save(userEntity);
     }
@@ -69,12 +65,7 @@ public class UserService {
         return email == null ? Optional.empty() : userRepository.findByEmail(email);
     }
 
-    public Map<String, Integer> getWeights(String id) {
-        UserEntity userEntity = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
 
-        return userEntity.getWeights();
-    }
 
     public Optional<UserEntity> getUserById(String id) {
         return id == null ? Optional.empty() : userRepository.findById(id);
@@ -112,13 +103,8 @@ public class UserService {
 
             if (userInfo.getPesoActualizado() != null) {
                 userEntity.setPesoActualizado(userInfo.getPesoActualizado());
-                if (userEntity.getWeights() == null) {
-                    userEntity.setWeights(new HashMap<>());
-                }
-                userEntity.getWeights().put(currentDate, userInfo.getPesoActualizado());
             } else {
                 userEntity.setPesoActualizado(userInfo.getPesoInicial());
-                userEntity.getWeights().put(LocalDate.now().toString(), userInfo.getPesoInicial());
             }
             if (userInfo.getAltura() != 0) userEntity.setAltura(userInfo.getAltura());
             if (userInfo.getEdad() != 0) userEntity.setEdad(userInfo.getEdad());

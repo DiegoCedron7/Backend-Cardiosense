@@ -40,15 +40,6 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/weights/{id}")
-    public ResponseEntity<Map<String, Integer>> getWeights(@PathVariable String id) {
-        Map<String, Integer> weights = userService.getWeights(id);
-        if (weights == null) {
-            Map<String, Integer> emptyMap = Collections.emptyMap();
-            return ResponseEntity.ok(emptyMap);
-        }
-        return ResponseEntity.ok(userService.getWeights(id));
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable String id) {
